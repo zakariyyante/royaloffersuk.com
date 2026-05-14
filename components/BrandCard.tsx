@@ -18,10 +18,15 @@ const buildUrl = (url: string, gclid?: string) => {
 
 const BrandCard = ({ brand, index, gclid }: BrandCardProps) => {
   const affiliateUrl = buildUrl(brand.url, gclid);
+  
+  // Masking logic: Create a display URL based on partner name
+  const displayUrl = `https://${brand.name.toLowerCase().replace(/\s+/g, "")}.com`;
 
-  const handleCardClick = (e: React.MouseEvent) => {
-    // Prevent double triggering if clicking a link inside
-    if ((e.target as HTMLElement).closest('a')) return;
+  const handleNavigation = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
     track("Brand Click", { brand: brand.name });
     if (typeof window !== "undefined" && (window as any).gtag_report_conversion) {
@@ -48,21 +53,16 @@ const BrandCard = ({ brand, index, gclid }: BrandCardProps) => {
             ? "border-2 border-neon-purple shadow-[0_0_25px_rgba(157,0,255,0.2)]" 
             : "border border-white/10 hover:border-neon-purple/50"
         }`}
-        onClick={handleCardClick}
+        onClick={() => handleNavigation()}
       >
-        {/* Left Column: Logo - Now wrapped in a link */}
+        {/* Left Column: Logo - Wrapped in a masked link */}
         <div className="shrink-0 w-48 md:w-56">
           <a 
-            href={affiliateUrl} 
+            href={displayUrl} 
             target="_blank" 
             rel="noopener noreferrer"
             className="relative aspect-[2/1] flex items-center justify-center bg-black/40 rounded-lg p-4 border border-white/5 block hover:border-neon-purple/50 transition-colors"
-            onClick={(e) => {
-              track("Brand Click", { brand: brand.name, source: "logo" });
-              if (typeof window !== "undefined" && (window as any).gtag_report_conversion) {
-                (window as any).gtag_report_conversion();
-              }
-            }}
+            onClick={(e) => handleNavigation(e)}
           >
             <Image
               src={brand.logo}
@@ -104,16 +104,11 @@ const BrandCard = ({ brand, index, gclid }: BrandCardProps) => {
 
           <div className="w-full md:w-auto flex flex-col items-center md:items-end gap-2">
             <a 
-              href={affiliateUrl}
+              href={displayUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="premium-button w-full md:w-56 py-4 rounded-md shadow-[0_0_15px_rgba(157,0,255,0.3)] text-center block text-xs md:text-sm"
-              onClick={(e) => {
-                track("Brand Click", { brand: brand.name, source: "button" });
-                if (typeof window !== "undefined" && (window as any).gtag_report_conversion) {
-                  (window as any).gtag_report_conversion();
-                }
-              }}
+              onClick={(e) => handleNavigation(e)}
             >
               PLAY AT {brand.name.toUpperCase()}
             </a>
