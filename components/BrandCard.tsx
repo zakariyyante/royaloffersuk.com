@@ -75,12 +75,9 @@ const BrandCard = ({ brand, index, gclid }: BrandCardProps) => {
 
         {/* Middle Column: Details */}
         <div className="flex flex-col flex-grow text-center md:text-left gap-2">
-          <h3 className="text-2xl md:text-3xl font-black text-white leading-tight mb-1 group-hover:text-neon-blue transition-colors">
+          <h3 className="text-2xl md:text-3xl font-black text-white leading-tight group-hover:text-neon-blue transition-colors">
             {brand.bonus}
           </h3>
-          <p className="text-sm md:text-base text-white/70 font-medium max-w-md">
-            {brand.description}
-          </p>
         </div>
 
         {/* Right Column: Rating & CTA */}
